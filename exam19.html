@@ -16,23 +16,90 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     $(document).ready(function(){
+
+       // 추가: 숫자와 연산자를 저장할 변수
+       let num1 = "";
+       let num2 = "";
+       let op = "";
+
        $(".num").click(function(){
             let cur =$("#disp2").val();
             let n = $(this).val();
+
+            // 추가: 첫 번째 숫자와 두 번째 숫자 구분
+            if(op == ""){
+                num1 = num1 + n;
+            }
+            else {
+                num2 = num2 + n;
+            }
+
             $("#disp2").val(cur+n);
        });
+
        $(".op").click(function(){
             let cur =$("#disp2").val();
             let n = $(this).val();
             if(n != "=") {
-                $("#disp2").val(cur+n);
+
+                // 추가: 연산자 저장
+                if(num1 != "" && op == ""){
+                    op = n;
+                    $("#disp2").val(cur+n);
+                }
+
             }
             else {
-                let result = eval(cur);
-                $("#disp1").val(cur);
-                $("#disp2").val(result);
+
+                // 수정: eval() 대신 사칙연산 직접 계산
+                if(num1 != "" && num2 != "" && op != ""){
+                    let a = Number(num1);
+                    let b = Number(num2);
+                    let result;
+
+                    if(op == "+"){
+                        result = a + b;
+                    }
+                    else if(op == "-"){
+                        result = a - b;
+                    }
+                    else if(op == "*"){
+                        result = a * b;
+                    }
+                    else if(op == "/"){
+                        if(b == 0){
+                            result = "오류";
+                        }
+                        else {
+                            result = a / b;
+                        }
+                    }
+
+                    $("#disp1").val(cur);
+                    $("#disp2").val(result);
+
+                    // 추가: 다음 계산을 위한 변수 초기화
+                    num1 = "";
+                    num2 = "";
+                    op = "";
+
+                    if(result != "오류"){
+                        num1 = String(result);
+                    }
+                }
             }
        });
+
+       // 추가: AC 버튼을 누르면 초기화
+       $(".func").click(function(){
+            num1 = "";
+            num2 = "";
+            op = "";
+
+            $("#disp1").val("");
+            $("#disp2").val("");
+       });
+
     });
 </script>
 <body>
@@ -54,10 +121,10 @@
         <input type="button" class="num" value="2">
         <input type="button" class="num" value="3">
         <input type="button" class="op" value="*"><br>
-        <input type="button" class="func" value="ac">
+        <input type="button" class="func" value="AC">
         <input type="button" class="num" value="0">
         <input type="button" class="op" value="=">
-        <input type="button" class="op" value="/"">
+        <input type="button" class="op" value="/">
     </div>
 </body>
 </html>
